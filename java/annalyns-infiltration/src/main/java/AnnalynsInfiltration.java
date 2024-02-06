@@ -12,12 +12,11 @@ class AnnalynsInfiltration {
     }
 
     public static boolean canFreePrisoner(boolean knightIsAwake, boolean archerIsAwake, boolean prisonerIsAwake, boolean petDogIsPresent) {
-        boolean canFree = false;
         if (petDogIsPresent && !archerIsAwake) {
-            canFree = true;
+            return true;
         } else if (!petDogIsPresent && !knightIsAwake && AnnalynsInfiltration.canSignalPrisoner(archerIsAwake, prisonerIsAwake)) {
-            canFree = true;
+            return true;
         }
-        return canFree;
+        return false;
     }
 }
