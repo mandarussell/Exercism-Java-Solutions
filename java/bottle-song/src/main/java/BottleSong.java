@@ -17,18 +17,14 @@ class BottleSong {
         String bottleString = "bottles";
         StringBuilder song = new StringBuilder();
 
-        if (startBottles > 10) {startBottles = 10;}
-        if (takeDown > startBottles) {takeDown = startBottles;}
+        if (startBottles > 10) startBottles = 10;
+        if (takeDown > startBottles) takeDown = startBottles;
 
         // Append each verse to the song
         for (int i = startBottles; i > (startBottles-takeDown); i--) {
-            if (i == 1) {
-                bottleString = "bottle";
-            }
+            if (i == 1) bottleString = "bottle";
 
-            if (i != startBottles) {
-                song.append(System.lineSeparator());
-            }
+            if (i != startBottles) song.append(System.lineSeparator());
 
             // Append verse lines 1 and 2
             for (int j=0; j<2; j++) {
