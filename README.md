@@ -1,4 +1,3 @@
 # Exercism-Java-Solutions
-Projects from Exercism Java track.
+Projects from [Exercism Java](https://exercism.org/profiles/mandarussell) track.
 
-https://exercism.org/
