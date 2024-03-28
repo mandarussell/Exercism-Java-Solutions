@@ -1,93 +1,145 @@
+import java.nio.Buffer;
+
 class TwoBucket {
+    private static final String BUCKET_ONE = "one";
+    private static final String BUCKET_TWO = "two";
+    private String startBucket;
+    private int bucketOneCap;
+    private int bucketTwoCap;
+    private int bucketOneCurrent;    
+    private int bucketTwoCurrent;
+    private int desiredLiters;
     private int totalMoves;
     private String finalBucket;
     private int otherBucket;
-    private final String BUCKET_ONE = "one";
-    private static final String BUCKET_TWO = "two";
 
     TwoBucket(int bucketOneCap, int bucketTwoCap, int desiredLiters, String startBucket) {
-        int bucketOneCurrent = 0;
-        int bucketTwoCurrent = 0;
+        this.bucketOneCap = bucketOneCap;
+        this.bucketTwoCap = bucketTwoCap;
+        this.desiredLiters = desiredLiters;
+        this.startBucket = startBucket;
 
-        // Check if the solution has been found.
-        for (int i = 0; i <= 20; i++) {
-            if (bucketOneCurrent == desiredLiters){ 
-                totalMoves = i;
-                finalBucket = BUCKET_ONE;
-                otherBucket = bucketTwoCurrent;
+        this.findSolution();
+    }
+
+    void findSolution() {
+        String transferFrom = BUCKET_ONE;
+
+        this.fillBucket(this.startBucket);
+
+        int bucketOneAvail;
+        int bucketTwoAvail;
+        
+        while (this.bucketOneCurrent != this.desiredLiters && this.bucketTwoCurrent != this.desiredLiters) {
+            bucketOneAvail = this.bucketOneCap - this.bucketOneCurrent;
+            bucketTwoAvail = this.bucketTwoCap - this.bucketTwoCurrent;
+
+            // Change the transfer direction if the desiredLiters could be obtained
+            switch (this.startBucket) {
+                case BUCKET_ONE:
+                    if (this.bucketTwoCap - this.bucketOneCap == this.desiredLiters 
+                        || this.bucketTwoCurrent - bucketOneAvail == this.desiredLiters
+                        || this.bucketTwoCap == this.desiredLiters) {
+                            transferFrom = BUCKET_TWO;
+                    }
+                    break;
+                default:
+                    if (this.bucketOneCurrent - bucketTwoAvail == this.desiredLiters) {
+                        transferFrom = BUCKET_ONE;
+                    } else {
+                        transferFrom = BUCKET_TWO;
+                    }
+            }
+
+            switch (transferFrom) {
+                case BUCKET_ONE:
+                    if (this.bucketOneCurrent == 0) {
+                        this.fillBucket(BUCKET_ONE);
+                    } else if (this.bucketTwoCurrent == bucketTwoCap) {
+                        this.emptyBucket(BUCKET_TWO);
+                    } else {
+                        this.transferBucket(BUCKET_ONE, bucketOneAvail, bucketTwoAvail);
+                    }
+                    break;
+                default:
+                    if (this.bucketTwoCurrent == 0) {
+                        this.fillBucket(BUCKET_TWO);
+                    } else if (this.bucketOneCurrent == bucketOneCap) {
+                        this.emptyBucket(BUCKET_ONE);
+                    } else {
+                        this.transferBucket(BUCKET_TWO, bucketOneAvail, bucketTwoAvail);
+                    }
+            } 
+
+            // Escape clause in case there is no solution.
+            if (this.totalMoves == 100) {break;}
+        }
+    }
+
+    void fillBucket(String bucketToFill) {
+        switch (bucketToFill) {
+            case BUCKET_ONE:
+                this.bucketOneCurrent = this.bucketOneCap;
                 break;
-            } else if (bucketTwoCurrent == desiredLiters) {
-                totalMoves = i;
-                finalBucket = BUCKET_TWO;
-                otherBucket = bucketOneCurrent;
+            case BUCKET_TWO:
+                this.bucketTwoCurrent = this.bucketTwoCap;
                 break;
-            }
+            default:
+                throw new IllegalArgumentException("fillBucket: Unknown bucket");
+        }
 
-            /* 
-                Edge case(s):
-                - Other bucket cap is equal to the desireLiters
-            */
-            if (i == 1) {
-                if (startBucket == BUCKET_ONE && bucketTwoCap == desiredLiters) {
-                    bucketTwoCurrent = bucketTwoCap;
-                    continue;
-                } else if (startBucket == BUCKET_TWO && bucketOneCap == desiredLiters) {
-                    bucketOneCurrent = bucketOneCap;
-                    continue;
-                }
-            }
+        this.totalMoves++;
+        this.checkBuckets();
+    }
 
-            /* 
-                Even iterations:
-                - fill the start bucket
-                    OR
-                - empty the other bucket
+    void emptyBucket(String bucketToEmpty) {
+        switch (bucketToEmpty) {
+            case BUCKET_ONE:
+                this.bucketOneCurrent = 0;
+                break;
+            case BUCKET_TWO:
+                this.bucketTwoCurrent = 0;
+                break;
+            default:
+                throw new IllegalArgumentException("emptyBucket: Unknown bucket");
+        }
 
-                Odd iterations:
-                - swap contents from start bucket to other bucket
-            */ 
-            if (i%2 == 0) {
-                switch (startBucket){
-                    case (BUCKET_ONE):
-                        if (bucketTwoCurrent != bucketTwoCap) {
-                            bucketOneCurrent = bucketOneCap;
-                        } else {
-                            bucketTwoCurrent = 0;
-                        }
-                        break;
-                    default:
-                        if (bucketOneCurrent != bucketOneCap) {
-                            bucketTwoCurrent = bucketTwoCap;
-                        } else {
-                            bucketOneCurrent = 0;
-                        }
-                        break;
-                }
-            } else {
-                int availableLiters;
-                switch (startBucket) {
-                    case (BUCKET_ONE):
-                        availableLiters = bucketTwoCap - bucketTwoCurrent;
-                        if (bucketOneCurrent <= availableLiters) {
-                            bucketTwoCurrent += bucketOneCurrent;
-                            bucketOneCurrent = 0;
-                        } else {
-                            bucketOneCurrent -= availableLiters;
-                            bucketTwoCurrent = bucketTwoCap;
-                        }
-                        break;
-                    default:
-                        availableLiters = bucketOneCap - bucketOneCurrent;
-                        if (bucketTwoCurrent <= availableLiters) {
-                            bucketOneCurrent += bucketTwoCurrent;
-                            bucketTwoCurrent = 0;
-                        } else {
-                            bucketTwoCurrent -= availableLiters;
-                            bucketOneCurrent = bucketOneCap;
-                        }
-                        break;
-                }
-            }
+        this.totalMoves++;
+    }
+
+    void transferBucket (String fromBucket, int bucketOneAvail, int bucketTwoAvail) {
+        switch (fromBucket) {
+            case BUCKET_ONE:
+                this.bucketTwoCurrent = 
+                    (bucketTwoAvail > this.bucketOneCurrent) ?
+                    this.bucketTwoCurrent + this.bucketOneCurrent : this.bucketTwoCap;
+                this.bucketOneCurrent =
+                    (bucketTwoAvail > this.bucketOneCurrent) ?
+                    0 : this.bucketOneCurrent - bucketTwoAvail;
+                break;
+            case BUCKET_TWO:
+                this.bucketOneCurrent = 
+                    (bucketOneAvail > this.bucketTwoCurrent) ? 
+                    this.bucketOneCurrent + this.bucketTwoCurrent : this.bucketOneCap; 
+                this.bucketTwoCurrent = 
+                    (bucketOneAvail > this.bucketTwoCurrent) ? 
+                    0 : this.bucketTwoCurrent - bucketOneAvail;
+                break;
+            default:   
+                throw new IllegalArgumentException("transferBucket: Unknown bucket");
+        }
+
+        this.totalMoves++;
+        this.checkBuckets();
+    }
+
+    void checkBuckets() {
+        if (this.bucketOneCurrent == this.desiredLiters) {
+            this.finalBucket = BUCKET_ONE;
+            this.otherBucket = this.bucketTwoCurrent;
+        } else if (this.bucketTwoCurrent == this.desiredLiters) {
+            this.finalBucket = BUCKET_TWO;
+            this.otherBucket = this.bucketOneCurrent;
         }
     }
 

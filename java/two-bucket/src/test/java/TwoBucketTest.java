@@ -70,4 +70,16 @@ public class TwoBucketTest {
         assertThat(twoBucket.getOtherBucket()).isEqualTo(2);
 
     }
+
+    // Additional test(s)
+    @Test
+    public void testBucketOneSizeThreeBucketTwoSizeFiveStartWithOneFindTwo() {
+
+        TwoBucket twoBucket = new TwoBucket(3, 5, 2, "one");
+
+        assertThat(twoBucket.getTotalMoves()).isEqualTo(4);
+        assertThat(twoBucket.getFinalBucket()).isEqualTo("two");
+        assertThat(twoBucket.getOtherBucket()).isEqualTo(3);
+
+    }
 }
