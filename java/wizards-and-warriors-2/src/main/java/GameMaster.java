@@ -39,7 +39,7 @@ public class GameMaster {
             );
     }
 
-    // TODO: define a 'describe' method that returns a description of a Character and Destination
+    // Method to return a description of a Character and Destination
     public String describe(Character character, Destination destination) {
         return String.format(
                 "%s %s %s", 
