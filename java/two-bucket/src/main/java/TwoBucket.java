@@ -31,9 +31,9 @@ class TwoBucket {
         
         while (finalBucket == null) {
             // Edge Cases: Change the transfer direction if the desiredLiters could be obtained
-            if (bucketTo.getCap() - bucketFrom.getCap() == this.desiredLiters 
+            if (bucketTo.getCapacity() - bucketFrom.getCapacity() == this.desiredLiters 
             || bucketTo.getCurrent() - bucketFrom.getAvailable() == this.desiredLiters
-            || bucketTo.getCap() == this.desiredLiters) {
+            || bucketTo.getCapacity() == this.desiredLiters) {
                 Bucket tempBucket = this.bucketFrom;
                 this.bucketFrom = this.bucketTo;
                 this.bucketTo = tempBucket;
@@ -65,9 +65,9 @@ class TwoBucket {
 
     void checkBuckets() {
         if (bucketFrom.isDesiredLiters(this.desiredLiters)) {
-            this.finalBucket = this.bucketFrom.getBucketNumber();
+            this.finalBucket = this.bucketFrom.getNumber();
         } else if (bucketTo.isDesiredLiters(this.desiredLiters)) {
-            this.finalBucket = this.bucketTo.getBucketNumber();
+            this.finalBucket = this.bucketTo.getNumber();
         }
     }
 
@@ -80,7 +80,7 @@ class TwoBucket {
     }
 
     int getOtherBucket() {
-        if (this.bucketFrom.getBucketNumber() == this.finalBucket) {
+        if (this.bucketFrom.getNumber() == this.finalBucket) {
             return this.bucketTo.getCurrent();
         } else {
             return this.bucketFrom.getCurrent();

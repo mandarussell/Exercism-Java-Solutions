@@ -1,67 +1,67 @@
 public class Bucket {
-    private int bucketCap;
-    private int bucketCurrent;
-    private String bucketNumber;
+    private int capacity;
+    private int current;
+    private String number;
 
-    Bucket(int bucketCap, String bucketNumber) {
-        this.bucketCap = bucketCap;
-        this.bucketCurrent = 0;
-        this.bucketNumber = bucketNumber;
+    Bucket(int capacity, String number) {
+        this.capacity = capacity;
+        this.current = 0;
+        this.number = number;
     }
 
-    void setCurrent(int bucketCurrent) {
-        this.bucketCurrent = bucketCurrent;
+    void setCurrent(int current) {
+        this.current = current;
     }
 
     void fill() {
-        this.bucketCurrent = this.bucketCap;
+        this.current = this.capacity;
     }
 
     void empty() {
-        this.bucketCurrent = 0;
+        this.current = 0;
     }
 
-    int getCap() {
-        return this.bucketCap;
+    int getCapacity() {
+        return this.capacity;
     }
 
     int getCurrent() {
-        return this.bucketCurrent;
+        return this.current;
     }
 
-    String getBucketNumber() {
-        return this.bucketNumber;
+    String getNumber() {
+        return this.number;
     }
 
     int getAvailable() {
-        return this.bucketCap - this.bucketCurrent;
+        return this.capacity - this.current;
     }
 
     boolean isDesiredLiters(int desiredLiters) {
-        return this.bucketCurrent == desiredLiters;
+        return this.current == desiredLiters;
     }
 
     boolean isEmpty() {
-        return this.bucketCurrent == 0;
+        return this.current == 0;
     }
 
     boolean isFull() {
-        return this.bucketCurrent == this.bucketCap;
+        return this.current == this.capacity;
     }
 
     void transferTo(int otherBucket) {
         if (this.getAvailable() > otherBucket) {
-            this.bucketCurrent += otherBucket;
+            this.current += otherBucket;
         } else {
-            this.bucketCurrent = this.bucketCap;
+            this.current = this.capacity;
         }
     }
 
     void transferFrom(int availableLiters) {
-        if (availableLiters > this.bucketCurrent) {
-            this.bucketCurrent = 0;
+        if (availableLiters > this.current) {
+            this.current = 0;
         } else {
-            this.bucketCurrent -= availableLiters; 
+            this.current -= availableLiters; 
         }
     }
 }
