@@ -1,10 +1,12 @@
 public class Bucket {
     private int bucketCap;
     private int bucketCurrent;
+    private String bucketNumber;
 
-    Bucket(int bucketCap) {
+    Bucket(int bucketCap, String bucketNumber) {
         this.bucketCap = bucketCap;
         this.bucketCurrent = 0;
+        this.bucketNumber = bucketNumber;
     }
 
     void setCurrent(int bucketCurrent) {
@@ -25,6 +27,10 @@ public class Bucket {
 
     int getCurrent() {
         return this.bucketCurrent;
+    }
+
+    String getBucketNumber() {
+        return this.bucketNumber;
     }
 
     int getAvailable() {
