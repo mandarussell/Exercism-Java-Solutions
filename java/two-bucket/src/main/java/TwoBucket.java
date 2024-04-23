@@ -11,16 +11,10 @@ class TwoBucket {
     private Bucket bucketTo;
 
     TwoBucket(int bucketOneCap, int bucketTwoCap, int desiredLiters, String startBucket) {
-        this.bucketFrom = new Bucket(
-                            (startBucket == BUCKET_ONE) ? bucketOneCap : bucketTwoCap, 
-                            (startBucket == BUCKET_ONE) ? BUCKET_ONE : BUCKET_TWO
-                            );
-        this.bucketTo = new Bucket(
-                            (startBucket == BUCKET_ONE) ? bucketTwoCap : bucketOneCap,
-                            (startBucket == BUCKET_ONE) ? BUCKET_TWO : BUCKET_ONE
-                            );
+        this.bucketFrom = new Bucket(bucketOneCap, BUCKET_ONE);
+        this.bucketTo = new Bucket(bucketTwoCap, BUCKET_TWO);
+        if (startBucket == BUCKET_TWO) {this.swapBuckets();}
         this.desiredLiters = desiredLiters;
-
         this.findSolution();
     }
 
@@ -34,9 +28,7 @@ class TwoBucket {
             if (bucketTo.getCapacity() - bucketFrom.getCapacity() == this.desiredLiters 
             || bucketTo.getCurrent() - bucketFrom.getAvailable() == this.desiredLiters
             || bucketTo.getCapacity() == this.desiredLiters) {
-                Bucket tempBucket = this.bucketFrom;
-                this.bucketFrom = this.bucketTo;
-                this.bucketTo = tempBucket;
+                this.swapBuckets();
             }
 
             // Fill, empty or transfer water between the two buckets:
@@ -69,6 +61,12 @@ class TwoBucket {
         } else if (bucketTo.isDesiredLiters(this.desiredLiters)) {
             this.finalBucket = this.bucketTo.getNumber();
         }
+    }
+
+    void swapBuckets() {
+        Bucket tempBucket = this.bucketFrom;
+        this.bucketFrom = this.bucketTo;
+        this.bucketTo = tempBucket;
     }
 
     int getTotalMoves() {
