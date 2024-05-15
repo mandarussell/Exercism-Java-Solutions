@@ -5,8 +5,6 @@ class TwoBucket {
     private int desiredLiters;
     private int totalMoves;
 
-    private String finalBucket;
-
     private Bucket bucketFrom;
     private Bucket bucketTo;
 
@@ -23,7 +21,7 @@ class TwoBucket {
         this.totalMoves++;
         this.checkBuckets();
         
-        while (finalBucket == null) {
+        while (!this.checkBuckets()) {
             // Edge Cases: Change the transfer direction if the desiredLiters could be obtained
             if (bucketTo.getCapacity() - bucketFrom.getCapacity() == this.desiredLiters 
             || bucketTo.getCurrent() - bucketFrom.getAvailable() == this.desiredLiters
@@ -48,19 +46,25 @@ class TwoBucket {
         }
     }
 
-    void transferBucket () {
-        int availableLiters;
-        availableLiters = bucketTo.getAvailable();
-        bucketTo.transferTo(bucketFrom.getCurrent());
-        bucketFrom.transferFrom(availableLiters);
+    void transferBucket() {
+        bucketTo.transfer(bucketFrom);
     }
 
-    void checkBuckets() {
+    /**
+     * Checks if either the bucket being transferred to or from has the desired Liters.
+     * If the desired liters is found in the from bucket, swap this with the bucketTo bucket, 
+     * as this simplifies the logic for the getFinalBucket and getOtherBucket methods.
+     * 
+     * @return boolean to state if desired liters has been achieved
+     */
+    boolean checkBuckets() {
         if (bucketFrom.isDesiredLiters(this.desiredLiters)) {
-            this.finalBucket = this.bucketFrom.getNumber();
+            this.swapBuckets();
+            return true;
         } else if (bucketTo.isDesiredLiters(this.desiredLiters)) {
-            this.finalBucket = this.bucketTo.getNumber();
+            return true;
         }
+        return false;
     }
 
     void swapBuckets() {
@@ -74,15 +78,11 @@ class TwoBucket {
     }
 
     String getFinalBucket() {
-        return this.finalBucket;
+        return this.bucketTo.getNumber();
     }
 
     int getOtherBucket() {
-        if (this.bucketFrom.getNumber() == this.finalBucket) {
-            return this.bucketTo.getCurrent();
-        } else {
-            return this.bucketFrom.getCurrent();
-        }
+        return this.bucketFrom.getCurrent();
     }
 }
 

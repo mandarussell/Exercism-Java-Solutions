@@ -49,19 +49,22 @@ public class Bucket {
         return this.current == this.capacity;
     }
 
-    void transferTo(int otherBucket) {
-        if (this.getAvailable() > otherBucket) {
-            this.current += otherBucket;
+    /**
+     * Recalculates the current liters for both this Bucket and fromBucket 
+     * based on the available capacity of this bucket.
+     * 
+     * @param fromBucket the Bucket water is being transferred from
+     */
+    void transfer(Bucket fromBucket) {
+        int availableLiters = this.getAvailable();
+        int fromBucketCurrent = fromBucket.getCurrent();
+
+        if (availableLiters > fromBucketCurrent) {
+            this.current += fromBucketCurrent;
+            fromBucket.setCurrent(0);
         } else {
             this.current = this.capacity;
-        }
-    }
-
-    void transferFrom(int availableLiters) {
-        if (availableLiters > this.current) {
-            this.current = 0;
-        } else {
-            this.current -= availableLiters; 
+            fromBucket.setCurrent(fromBucketCurrent - availableLiters);
         }
     }
 }
